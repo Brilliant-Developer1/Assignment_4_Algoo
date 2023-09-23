@@ -1,45 +1,57 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
+bool canDivideChocolates(int N, vector<int> &chocolates)
+{
+    int totalChocolates = 0;
+
+    // Calculate the total number of chocolates in all boxes
+    for (int i = 0; i < N; i++)
+    {
+        totalChocolates += chocolates[i];
+    }
+
+    // Check if the total number of chocolates is even
+    if (totalChocolates % 2 != 0)
+    {
+        return false;
+    }
+
+    int targetChocolates = totalChocolates / 2;
+
+    vector<bool> dp(targetChocolates + 1, false);
+    dp[0] = true;
+
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = targetChocolates; j >= chocolates[i]; j--)
+        {
+            dp[j] = dp[j] || dp[j - chocolates[i]];
+        }
+    }
+
+    return dp[targetChocolates];
+}
+
 int main()
 {
-    int test;
-    cin >> test;
+    int T;
+    cin >> T;
 
-    while (test--)
+    while (T--)
     {
-        int n, m;
-        cin >> n >> m;
-        int a[n];
+        int N;
+        cin >> N;
+        vector<int> chocolates(N);
 
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < N; i++)
         {
-            cin >> a[i];
+            cin >> chocolates[i];
         }
 
-        int u = 1000 - m;
-        bool dp[n + 1][u + 1];
-
-        dp[0][0] = true;
-        for (int i = 1; i <= u; i++)
-        {
-            dp[0][i] = false;
-        }
-
-        for (int i = 1; i <= n; i++)
-        {
-            for (int j = 0; j <= u; j++)
-            {
-                dp[i][j] = dp[i - 1][j];
-                if (j >= a[i - 1])
-                {
-                    dp[i][j] = dp[i][j] || dp[i - 1][j - a[i - 1]];
-                }
-            }
-        }
-
-        if (dp[n][u])
+        if (canDivideChocolates(N, chocolates))
             cout << "YES" << endl;
         else
             cout << "NO" << endl;
@@ -55,36 +67,41 @@ my code :
 please slove this using knapsack in cpp
 Problem Statement
 
-Zarif has received M marks in his final term exam out of 1000. However, he wishes to obtain a perfect score of 1000 marks just once in his life. His wish was granted by a fairy who provided him with a list of N marks to choose from. Zarif needs to select any number of marks from that list, but he can choose each mark only once.
+Once upon a time, there was a treasure hunter who ventured into an ancient temple in search of a valuable artifact. The temple was filled with traps and obstacles, and the treasure hunter had to carry all of his equipment with him.
 
-Can you tell if he can select marks from this list in such a way that his total marks add up to 1000?
+The treasure hunter had a backpack with a limited weight capacity, and he could only carry a certain amount of equipment with him. Each piece of equipment had its own weight and value, and the treasure hunter needed to choose which items to bring to maximize the total value while keeping the total weight under the limit.
+
+Help the treasure hunter to choose which items to bring in his backpack to maximize their total value while keeping the total weight of his backpack under a certain limit. Each item can only be included once.
 
 Input Format
 
 First line will contain T, the number of test cases.
-First line of each test case will contain N and M.
-Second line of each test case will contain a list A of N marks.
+The first line of each test case will contain N(Number of items) and W(Total weight of backpack).
+Second line of each test case will contain an array w containing the weights of all items.
+Third line of each test case will contain an array v containting the values of all items.
 Constraints
 
 1 <= T <= 1000
-1 <= N, M <= 1000
-1 <= A[i] <= 100; 0 <= i < N
+1 <= N <= 1000
+0 <= W <= 1000
+0 <= w[i] <= 1000; Here 0 <= i < N
+0 <= v[i] <= 1000; Here 0 <= i < N
 Output Format
 
-Output "YES" if he can obtain perfect score of 1000, "NO" otherwise.
+Output the maximum total value you can obtain in the backpack for each test case.
+
 Sample Input 0:
-3
-5 1000
-1 2 3 4 5
-5 999
-2 3 4 5 6
-6 900
-10 20 30 40 50 60
+2
+4 7
+2 3 4 5
+4 7 6 5
+4 17
+10 1 6 9
+6 10 10 8
 .
 Sample Output 0 :
-YES
-NO
-YES
+13
+28
 
 still for this input :
 3
